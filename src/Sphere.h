@@ -1,6 +1,10 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
+#include "Hitable.h"
+#include "Random.h"
+#include "Vec3.h"
+
 class Sphere : public Hitable {
 public:
   Sphere() {}
@@ -51,6 +55,15 @@ inline bool Sphere::EvaluateHit(const Ray& ray, float t, float tMin, float tMax,
     return true;
   }
   return false;
+}
+
+Vec3 RandomInUnitSphere() {
+  Vec3 point;
+  do {
+    point = 2.0f * Vec3(Random::Next(), Random::Next(), Random::Next()) - 
+            Vec3(1.0f, 1.0f, 1.0f);
+  } while(point.LengthSquared() >= 1.0f);
+  return point;
 }
 
 #endif
