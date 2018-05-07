@@ -51,6 +51,7 @@ inline bool Sphere::EvaluateHit(const Ray &ray, float t, float tMin, float tMax,
     result.T = t;
     result.Point = ray.Evaluate(t);
     result.Normal = (result.Point - Center) / Radius;
+    result.MaterialPtr = MaterialPtr;
     return true;
   }
   return false;
