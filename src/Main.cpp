@@ -5,17 +5,25 @@
 
 #include "Camera.h"
 #include "HitableList.h"
+#include "Material.h"
 #include "Random.h"
 #include "Ray.h"
 #include "Sphere.h"
 #include "Vec3.h"
 
-Vec3 Color(const Ray &ray, Hitable *world) {
+const int MAX_DEPTH = 50;
+
+Vec3 Color(const Ray &ray, Hitable *world, int depth) {
   HitResult result;
   if (world->Hit(ray, 0.001f, std::numeric_limits<float>::max(), result)) {
-    Vec3 scatter = result.Point + result.Normal + RandomInUnitSphere();
-    Ray scatteredRay(result.Point, scatter - result.Point);
-    return 0.5f * Color(scatteredRay, world);
+    Vec3 attenuation;
+    Ray scattered;
+    if(depth < MAX_DEPTH && 
+       result.MaterialPtr->Scatter(ray, result, attenuation, scattered)) {
+      return attenuation * Color(scattered, world, depth + 1);
+    } else {
+      return Vec3(0.0f, 0.0f, 0.0f);
+    }
   } else {
     Vec3 direction = Normalized(ray.Direction);
     float t = 0.5f * (direction.Y() + 1.0f);
@@ -35,11 +43,18 @@ int main(int argc, char *argv[]) {
     numSamples = std::stol(argv[2]);
   }
 
-  Hitable *list[2];
-  list[0] = new Sphere(Vec3(0.0f, 0.0f, -1.0f), 0.5f);
-  list[1] = new Sphere(Vec3(0.0f, -100.5f, -1.0f), 100.0f);
-  Hitable *world = new HitableList(list, 2);
+  std::shared_ptr<Material> materials[4];
+  materials[0] = std::make_shared<Lambertian>(Vec3(0.8f, 0.3f, 0.3f));
+  materials[1] = std::make_shared<Lambertian>(Vec3(0.8f, 0.8f, 0.0f));
+  materials[2] = std::make_shared<Metal>(Vec3(0.8f, 0.6f, 0.2f));
+  materials[3] = std::make_shared<Metal>(Vec3(0.8f, 0.8f, 0.8f));
 
+  Hitable* list[4];
+  list[0] = new Sphere(Vec3(0.0f, 0.0f, -1.0f),    0.5f,   materials[0]);
+  list[1] = new Sphere(Vec3(0.0f, -100.5f, -1.0f), 100.0f, materials[1]);
+  list[2] = new Sphere(Vec3(1.0f, 0.0f, -1.0f),    0.5f,   materials[2]);
+  list[3] = new Sphere(Vec3(-1.0f, 0.0f, -1.0f),   0.5f,   materials[3]);
+  Hitable *world = new HitableList(list, 4);
   Camera camera;
 
   std::ofstream output("output.ppm", std::ios::out);
@@ -55,7 +70,7 @@ int main(int argc, char *argv[]) {
         float v = (static_cast<float>(j) + Random::Next()) /
                   static_cast<float>(height);
         Ray ray = camera.GetRay(u, v);
-        color += Color(ray, world);
+        color += Color(ray, world, 0);
       }
 
       color /= static_cast<float>(numSamples);
@@ -68,7 +83,9 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  delete list[0];
-  delete list[1];
+  for(int i = 0; i < 4; ++i) {
+    delete list[i];
+  }
+
   delete world;
 }

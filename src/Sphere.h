@@ -7,9 +7,10 @@
 
 class Sphere : public Hitable {
 public:
-  Sphere() {}
+  Sphere() : Hitable() {}
 
-  Sphere(const Vec3 &center, float radius) : Center(center), Radius(radius){};
+  Sphere(const Vec3 &center, float radius, const std::shared_ptr<Material>& material) 
+    : Hitable(material), Center(center), Radius(radius) {}
 
   virtual bool Hit(const Ray &ray, float tMin, float tMax,
                    HitResult &result) const override;
@@ -53,15 +54,6 @@ inline bool Sphere::EvaluateHit(const Ray &ray, float t, float tMin, float tMax,
     return true;
   }
   return false;
-}
-
-Vec3 RandomInUnitSphere() {
-  Vec3 point;
-  do {
-    point = 2.0f * Vec3(Random::Next(), Random::Next(), Random::Next()) -
-            Vec3(1.0f, 1.0f, 1.0f);
-  } while (point.LengthSquared() >= 1.0f);
-  return point;
 }
 
 #endif

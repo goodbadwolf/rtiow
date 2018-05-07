@@ -4,6 +4,8 @@
 #include <cmath>
 #include <iostream>
 
+#include "Random.h"
+
 struct Vec3 {
 public:
   Vec3() {}
@@ -157,6 +159,19 @@ inline void Vec3::Normalize() {
   e[0] *= k;
   e[1] *= k;
   e[2] *= k;
+}
+
+inline Vec3 Reflect(const Vec3& vec, const Vec3& normal) {
+  return vec - 2 * Dot(vec, normal) * normal;
+}
+
+Vec3 RandomInUnitSphere() {
+  Vec3 point;
+  do {
+    point = 2.0f * Vec3(Random::Next(), Random::Next(), Random::Next()) -
+            Vec3(1.0f, 1.0f, 1.0f);
+  } while (point.LengthSquared() >= 1.0f);
+  return point;
 }
 
 #endif
