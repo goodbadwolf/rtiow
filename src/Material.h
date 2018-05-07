@@ -6,7 +6,7 @@
 
 class Material {
 public:
-  virtual bool Scatter(const Ray& ray, const HitResult& hit, Vec3& attenuation, 
-                       Ray& scattered) = 0;
+  virtual bool Scatter(const Ray &ray, const HitResult &hit, Vec3 &attenuation,
+                       Ray &scattered) = 0;
 };
 #endif

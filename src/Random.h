@@ -3,14 +3,9 @@
 
 class Random {
 public:
-  Random()
-    : Generator(Device())
-    , Distribution(0.0f, 1.0f)
-  {}
+  Random() : Generator(Device()), Distribution(0.0f, 1.0f) {}
 
-  float GetNext() {
-    return Distribution(Generator);
-  }
+  float GetNext() { return Distribution(Generator); }
 
   static float Next() {
     static Random random;
