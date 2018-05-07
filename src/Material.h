@@ -2,6 +2,7 @@
 #define MATERIAL_H
 
 #include "Hitable.h"
+#include "Math.h"
 #include "Ray.h"
 #include "Vec3.h"
 
@@ -29,18 +30,19 @@ public:
 
 class Metal : public Material {
 public:
-  Metal(const Vec3& albedo)
-    : Albedo(albedo) {}
+  Metal(const Vec3& albedo, float fuzz)
+    : Albedo(albedo), Fuzz(Clamp01(fuzz)) {}
 
   virtual bool Scatter(const Ray& ray, const HitResult& hit, Vec3& attenuation, 
                        Ray& scattered) const override {
     Vec3 reflected = Reflect(Normalized(ray.Direction), hit.Normal);
-    scattered = Ray(hit.Point, reflected);
+    scattered = Ray(hit.Point, reflected + Fuzz * RandomInUnitSphere());
     attenuation = Albedo;
-    return (Dot(reflected, hit.Normal) > 0);
+    return (Dot(scattered.Direction, hit.Normal) > 0);
   }
 
   Vec3 Albedo;
+  float Fuzz;
 };
 
 #endif
