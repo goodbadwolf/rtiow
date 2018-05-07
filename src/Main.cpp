@@ -11,13 +11,12 @@
 #include "Vec3.h"
 
 
-Vec3 Color(const Ray& ray, Hitable* world, int& depth) {
+Vec3 Color(const Ray& ray, Hitable* world) {
   HitResult result;
   if(world->Hit(ray, 0.001f, std::numeric_limits<float>::max(), result)) {
     Vec3 scatter = result.Point + result.Normal + RandomInUnitSphere();
     Ray scatteredRay(result.Point, scatter - result.Point);
-    depth += 1;
-    return 0.5f * Color(scatteredRay, world, depth);
+    return 0.5f * Color(scatteredRay, world);
   }
   else {
     Vec3 direction = Normalized(ray.Direction);
@@ -55,10 +54,8 @@ int main(int argc, char *argv[]) {
       for(int s = 0;  s < numSamples; ++s) {
         float u = (static_cast<float>(i) + Random::Next()) / static_cast<float>(width);
         float v = (static_cast<float>(j) + Random::Next()) / static_cast<float>(height);
-        int depth = 0;
         Ray ray = camera.GetRay(u, v);
-        color += Color(ray, world, depth);
-        noOfBounces += depth;
+        color += Color(ray, world);
       }
 
       color /= static_cast<float>(numSamples);
@@ -69,9 +66,6 @@ int main(int argc, char *argv[]) {
              << static_cast<int>(255.99f * color[2]) << "\n";
     }
   }
-
-  float avgNoOfBounces = noOfBounces / static_cast<float>(width * height * numSamples);
-  std::cout << "Average number of bounces per pixel: " << avgNoOfBounces << "\n";
 
   delete list[0];
   delete list[1];
