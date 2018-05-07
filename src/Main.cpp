@@ -46,8 +46,8 @@ int main(int argc, char *argv[]) {
   std::shared_ptr<Material> materials[4];
   materials[0] = std::make_shared<Lambertian>(Vec3(0.8f, 0.3f, 0.3f));
   materials[1] = std::make_shared<Lambertian>(Vec3(0.8f, 0.8f, 0.0f));
-  materials[2] = std::make_shared<Metal>(Vec3(0.8f, 0.6f, 0.2f), 0.3f);
-  materials[3] = std::make_shared<Metal>(Vec3(0.8f, 0.8f, 0.8f), 1.0f);
+  materials[2] = std::make_shared<Metal>(Vec3(0.8f, 0.6f, 0.2f), 1.0f);
+  materials[3] = std::make_shared<Metal>(Vec3(0.8f, 0.8f, 0.8f), 0.3f);
 
   Hitable* list[4];
   list[0] = new Sphere(Vec3(0.0f, 0.0f, -1.0f),    0.5f,   materials[0]);
