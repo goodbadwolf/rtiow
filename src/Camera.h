@@ -5,7 +5,7 @@
 
 class Camera {
 public:
-  Camera()
+  Camera(float fov, float aspectRatio)
       : Origin(0.0f, 0.0f, 0.0f), Horizontal(4.0f, 0.0f, 0.0f),
         Vertical(0.0f, 2.0f, 0.0f), LowerLeft(-2.0f, -1.0f, -1.0f) {}
 

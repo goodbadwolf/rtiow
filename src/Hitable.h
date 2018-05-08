@@ -16,10 +16,9 @@ struct HitResult {
 
 class Hitable {
 public:
-  Hitable () : MaterialPtr(nullptr) {}
+  Hitable() : MaterialPtr(nullptr) {}
 
-  Hitable (const std::shared_ptr<Material>& material)
-    : MaterialPtr(material) {}
+  Hitable(const std::shared_ptr<Material> &material) : MaterialPtr(material) {}
 
   virtual bool Hit(const Ray &ray, float tMin, float tMax,
                    HitResult &result) const = 0;

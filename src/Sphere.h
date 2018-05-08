@@ -9,8 +9,9 @@ class Sphere : public Hitable {
 public:
   Sphere() : Hitable() {}
 
-  Sphere(const Vec3 &center, float radius, const std::shared_ptr<Material>& material) 
-    : Hitable(material), Center(center), Radius(radius) {}
+  Sphere(const Vec3 &center, float radius,
+         const std::shared_ptr<Material> &material)
+      : Hitable(material), Center(center), Radius(radius) {}
 
   virtual bool Hit(const Ray &ray, float tMin, float tMax,
                    HitResult &result) const override;

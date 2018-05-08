@@ -161,8 +161,22 @@ inline void Vec3::Normalize() {
   e[2] *= k;
 }
 
-inline Vec3 Reflect(const Vec3& vec, const Vec3& normal) {
+inline Vec3 Reflect(const Vec3 &vec, const Vec3 &normal) {
   return vec - 2 * Dot(vec, normal) * normal;
+}
+
+inline bool Refract(const Vec3 &vec, const Vec3 &normal, float niOverNt,
+                    Vec3 &refracted) {
+  Vec3 uv = Normalized(vec);
+  float dt = Dot(uv, normal);
+  float discriminant = 1.0f - niOverNt * niOverNt * (1.0f - dt * dt);
+  if (discriminant > 0) {
+    refracted =
+        niOverNt * (uv - normal * dt) - normal * std::sqrt(discriminant);
+    return true;
+  } else {
+    return false;
+  }
 }
 
 Vec3 RandomInUnitSphere() {
