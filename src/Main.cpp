@@ -56,7 +56,16 @@ int main(int argc, char *argv[]) {
   list[3] = new Sphere(Vec3(-1.0f, 0.0f, -1.0f), 0.5f, materials[3]);
   list[4] = new Sphere(Vec3(-1.0f, 0.0f, -1.0f), -0.45f, materials[3]);
   Hitable *world = new HitableList(list, 5);
-  Camera camera;
+  /*
+  Hitable *list[2];
+  float R = std::cos(M_PI / 4.0f);
+  list[0] = new Sphere(Vec3(-R, 0.0f, -1.0f), R, std::make_shared<Lambertian>(Vec3(0.0f, 0.0f, 1.0f)));
+  list[1] = new Sphere(Vec3( R, 0.0f, -1.0f), R, std::make_shared<Lambertian>(Vec3(1.0f, 0.0f, 0.0f)));
+  Hitable *world = new HitableList(list, 2);
+  */
+
+  Camera camera(Vec3(-2.0f, 2.0f, 1.0f), Vec3(0.0f, 0.0f, -1.0f), Vec3(0.0f, 1.0f, 0.0f), 
+                60.0f, static_cast<float>(width) / static_cast<float>(height));
 
   std::ofstream output("output.ppm", std::ios::out);
   output << "P3\n" << width << " " << height << "\n255\n";
@@ -85,7 +94,7 @@ int main(int argc, char *argv[]) {
   }
 
   for (int i = 0; i < 4; ++i) {
-    delete list[i];
+    //delete list[i];
   }
 
   delete world;
